@@ -1,0 +1,77 @@
+<html lang="en">
+  <head>
+    <link rel="dns-prefetch" href="http://fonts.googleapis.com/">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="/video.js"></script>
+    <script src="/switcher.js"></script>
+    <link rel="stylesheet" href="/videojs.css"/>
+  </head>
+  <body>
+    <video id="myVideo"
+      class="video-js vjs-big-play-centered vjs-16-9"
+      controls preload="none" width="640" height="264">
+    </video>
+    <script>
+      var sources = [
+        {"src": "https://lh3.googleusercontent.com/U4Jvo_2U9TZHOnj3VhiSyYSWck0pIbZIoKwH7g6BBfQuRWhrGd7vMx36f4etVrBObELj76_NXw=m37","label":1080,"type":"video/mp4"},
+        {"src":"https://lh3.googleusercontent.com/U4Jvo_2U9TZHOnj3VhiSyYSWck0pIbZIoKwH7g6BBfQuRWhrGd7vMx36f4etVrBObELj76_NXw=m22","label":720,"type":"video/mp4"},
+        {"src":"https://lh3.googleusercontent.com/U4Jvo_2U9TZHOnj3VhiSyYSWck0pIbZIoKwH7g6BBfQuRWhrGd7vMx36f4etVrBObELj76_NXw=m18","label":320,"type":"video/mp4"}
+      ];
+
+
+      let plugins = {
+        videoJsResolutionSwitcher: {
+          default: 'high',
+          dynamicLabel: true
+        }
+      }
+
+      let retries = 0;
+      let currentTime = 0;
+
+      let currentRes = sources[0];
+      let player = videojs('myVideo', {
+        controls: true,
+        autoplay: false,
+        preload: 'auto',
+        plugins: plugins
+      }, function () {
+        player.updateSrc(sources);
+      });
+      $('.vjs-seek-to-live-control').remove();
+
+      player.on('timeupdate', function () {
+        if (!player.error()) {
+          currentTime = player.currentTime();
+        }
+      });
+
+      player.on('error', function () {
+        player.error(null);
+        if (retries < 150) {
+          player.currentResolution(currentRes.label);
+          player.play();
+          ++retries;
+        } else {
+          player.pause();
+        }
+      });
+
+      player.on('loadeddata', function () {
+        retries = 0;
+        player.currentTime(currentTime);
+      });
+
+      player.on('resolutionchange', function () {
+        for (var i = 0, l = sources.length; i < l; ++i) {
+          var s = sources[i];
+          if (s.src == player.src()) {
+            currentRes = s;
+            break;
+          }
+        }
+      });
+
+    </script>
+  </body>
+</html>

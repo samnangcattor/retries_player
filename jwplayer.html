@@ -1,0 +1,29 @@
+<html lang="en">
+  <head>
+    <link rel="dns-prefetch" href="http://fonts.googleapis.com/">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://iamcdn.net/players/jwplayer/jwplayer.v8.custom.min.js"></script>
+  </head>
+  <body>
+    <div id="player"></div>
+    <script>
+      var player = jwplayer('player');
+      var data = [
+        {"file": "https://lh3.googleusercontent.com/U4Jvo_2U9TZHOnj3VhiSyYSWck0pIbZIoKwH7g6BBfQuRWhrGd7vMx36f4etVrBObELj76_NXw=m37","label":"1080p","type":"video/mp4"},
+        {"file":"https://lh3.googleusercontent.com/U4Jvo_2U9TZHOnj3VhiSyYSWck0pIbZIoKwH7g6BBfQuRWhrGd7vMx36f4etVrBObELj76_NXw=m22","label":"720p","type":"video/mp4"},
+        {"file":"https://lh3.googleusercontent.com/U4Jvo_2U9TZHOnj3VhiSyYSWck0pIbZIoKwH7g6BBfQuRWhrGd7vMx36f4etVrBObELj76_NXw=m18","label":"320p","type":"video/mp4"}
+      ];
+
+      player.setup({
+        sources: data
+      });
+
+      player.on('error', function() {
+        player.load({
+          sources: data
+        })
+        player.play();
+      });
+    </script>
+  </body>
+</html>
